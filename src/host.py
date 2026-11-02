@@ -58,7 +58,18 @@ def install():
     for b in BROWSERS:
         with winreg.CreateKey(winreg.HKEY_CURRENT_USER, rf'{b}\NativeMessagingHosts\{NAME}') as k:
             winreg.SetValueEx(k, '', 0, winreg.REG_SZ, manifest)
-    print('Готово. Расширение:', os.path.join(ROOT, 'extension'))
+    ext_dir = os.path.join(ROOT, 'extension')
+    copy_to_clipboard(ext_dir)
+    print('Готово. Путь к расширению скопирован в буфер обмена:', ext_dir)
+
+
+def copy_to_clipboard(text):
+    # Windows refuses clipboard writes from a process without a window, so let PowerShell do it.
+    # The text goes through an env var: no quoting issues with odd user names.
+    import subprocess
+    subprocess.run(['powershell', '-NoProfile', '-NonInteractive', '-Command', 'Set-Clipboard -Value $env:MP_CLIP'],
+                   env=dict(os.environ, MP_CLIP=text), creationflags=subprocess.CREATE_NO_WINDOW,
+                   stdin=subprocess.DEVNULL, capture_output=True, timeout=30)
 
 
 def uninstall():
@@ -356,10 +367,12 @@ async def main():
 
 
 if __name__ == '__main__':
-    if '--install' in sys.argv:
-        install()
-    elif '--uninstall' in sys.argv:
-        uninstall()
+    if '--install' in sys.argv or '--uninstall' in sys.argv:
+        try:
+            install() if '--install' in sys.argv else uninstall()
+        except Exception as e:
+            log('install failed:', repr(e))
+            sys.exit(1)
     else:
         log('started')
         try:

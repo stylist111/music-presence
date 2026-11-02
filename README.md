@@ -18,12 +18,12 @@ YouTube Music, Яндекс Музыка, Spotify, VK Музыка, Звук, Ba
 
 Браузер не может сам говорить с Discord, поэтому без помощника не обойтись.
 
-## Установка (пока из исходников)
+## Установка
 
-Нужен Python 3.11+.
-
-1. Зарегистрируй помощника: `python src\host.py --install`.
-2. Открой `chrome://extensions`, включи **Режим разработчика** → **Загрузить распакованное** → папка `extension`.
+1. Скачай `MusicPresence-Setup.exe` со страницы [Releases](https://github.com/stylist111/music-presence/releases/latest)
+   и запусти. Путь к папке расширения сам скопируется в буфер обмена.
+2. В браузере: меню ⋮ → Расширения → Управление расширениями → включи **Режим разработчика** →
+   **Загрузить распакованное расширение** → вставь путь (Ctrl+V) → **Выбор папки**.
 3. В Discord: Настройки → Конфиденциальность активности → включи «Показывать текущую активность».
 4. Включи музыку в браузере.
 
@@ -31,10 +31,17 @@ YouTube Music, Яндекс Музыка, Spotify, VK Музыка, Звук, Ba
 в `extension/background.js`. Хочешь другую подпись вместо «Слушает музыку» — создай своё на
 https://discord.com/developers/applications и поставь его Application ID туда же.
 
-Отключить: `python src\host.py --uninstall` и удалить расширение.
+Удалить: Параметры Windows → Приложения → Music Presence, и убрать расширение из браузера.
 
 ## Если не работает
 
 - Нажми на значок расширения: там видно, что сейчас играет и подключён ли Discord.
-- Журнал помощника — `host.log` в папке проекта.
+- Журнал помощника — `host.log` в папке программы (`%USERPROFILE%\Music Presence`).
+
+## Разработка
+
+- Запуск из исходников (нужен Python 3.11+): `python src\host.py --install`, затем загрузить папку `extension`.
 - Тесты: `python -m unittest discover -s tests`.
+- Сборка установщика (PyInstaller + Inno Setup 6): `powershell -ExecutionPolicy Bypass -File src\build.ps1`.
+- Выпуск: поднять `version` в `extension/manifest.json`, затем `git tag vX.Y.Z` и `git push origin main vX.Y.Z` —
+  GitHub сам соберёт установщик и выложит его в Releases.
