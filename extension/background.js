@@ -4,6 +4,9 @@
 const HOST = 'com.musicpresence.host';
 const CLIENT_ID = '1566907354707009636';  // Discord Application ID, see README
 const IDLE_MS = 60_000;
+// Our own icons for sites whose favicon doesn't fill Discord's round slot (src/badges.py).
+const BADGES = { YouTube: 'youtube' };
+const BADGE_URL = 'https://raw.githubusercontent.com/stylist111/music-presence/main/badges/';
 
 const tabs = new Map();  // tabId → { port, state, at, since }
 let native = null, status = { state: 'idle' }, idleTimer = null, retryAt = 0, enabled = true, shown = null;
@@ -84,10 +87,11 @@ function activity({ state: s, at }) {
   }
   // Cover with the site's icon in the corner; no cover → the icon alone.
   const fits = u => u && u.length <= 256;
-  const cover = fits(s.artwork) ? s.artwork : fits(s.icon) ? s.icon : '';
+  const icon = BADGES[s.site] ? `${BADGE_URL}${BADGES[s.site]}.png` : s.icon;
+  const cover = fits(s.artwork) ? s.artwork : fits(icon) ? icon : '';
   if (cover) {
     a.assets = { large_image: cover, large_text: pad((s.album || s.site).slice(0, 128)) };
-    if (cover !== s.icon && fits(s.icon)) Object.assign(a.assets, { small_image: s.icon, small_text: pad(s.site) });
+    if (cover !== icon && fits(icon)) Object.assign(a.assets, { small_image: icon, small_text: pad(s.site) });
   }
   if (s.position != null && s.rate > 0) {
     const start = Math.round(at / 1000 - s.position / s.rate);
