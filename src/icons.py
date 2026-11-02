@@ -1,43 +1,40 @@
-"""Draws extension/icons/icon{16,32,48,128}.png and src/icon.ico: a white note on an orange tile."""
-import os
+"""Makes extension/icons/icon{16,32,48,128}.png and src/icon.ico from src/logo.png.
 
-from PIL import Image, ImageDraw
+    python src/icons.py              resize the existing logo
+    python src/icons.py NEW.png      clean up a new logo first (drop the faint glow and specks
+                                     around the tile, crop, centre on a square) and save it as logo.png
+"""
+import os
+import sys
+
+from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+LOGO = os.path.join(HERE, 'logo.png')
 OUT = os.path.join(HERE, '..', 'extension', 'icons')
-S = 512  # draw big, then downscale
 
 
-def draw():
-    img = Image.new('RGBA', (S, S))
-    # vertical gradient tile
-    grad = Image.new('RGBA', (1, S))
-    for y in range(S):
-        t = y / (S - 1)
-        grad.putpixel((0, y), (int(255 - 25 * t), int(122 - 62 * t), int(40 + 20 * t), 255))
-    mask = Image.new('L', (S, S))
-    ImageDraw.Draw(mask).rounded_rectangle((0, 0, S - 1, S - 1), radius=S // 5, fill=255)
-    img.paste(grad.resize((S, S)), (0, 0), mask)
-    # note: two heads joined by a beam, drawn on its own layer and then centred on the tile
-    note = Image.new('RGBA', (S, S))
-    d = ImageDraw.Draw(note)
-    w = (255, 255, 255, 255)
-    for cx in (175, 345):
-        d.ellipse((cx - 62, 330, cx + 52, 420), fill=w)
-    d.rectangle((215, 120, 247, 380), fill=w)
-    d.rectangle((385, 90, 417, 350), fill=w)
-    d.polygon([(215, 120), (417, 90), (417, 160), (215, 190)], fill=w)
-    note = note.crop(note.getbbox())
-    img.alpha_composite(note, ((S - note.width) // 2, (S - note.height) // 2))
-    return img
+def clean(path):
+    img = Image.open(path).convert('RGBA')
+    # Below half opacity is glow or noise, above ~95% is the tile itself.
+    a = img.getchannel('A').point(lambda v: 0 if v < 128 else 255 if v > 240 else v)
+    img.putalpha(a)
+    img = img.crop(a.getbbox())
+    side = max(img.size)
+    square = Image.new('RGBA', (side, side))
+    square.alpha_composite(img, ((side - img.width) // 2, (side - img.height) // 2))
+    return square
 
 
 def main():
+    if len(sys.argv) > 1:
+        clean(sys.argv[1]).save(LOGO)
+    img = Image.open(LOGO)
     os.makedirs(OUT, exist_ok=True)
-    img = draw()
     for n in (16, 32, 48, 128):
         img.resize((n, n), Image.LANCZOS).save(os.path.join(OUT, f'icon{n}.png'))
-    img.save(os.path.join(HERE, 'icon.ico'), sizes=[(16, 16), (32, 32), (48, 48), (256, 256)])
+    img.resize((256, 256), Image.LANCZOS).save(os.path.join(HERE, 'icon.ico'),
+                                               sizes=[(16, 16), (32, 32), (48, 48), (256, 256)])
 
 
 if __name__ == '__main__':
