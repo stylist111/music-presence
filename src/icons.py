@@ -10,7 +10,6 @@ S = 512  # draw big, then downscale
 
 def draw():
     img = Image.new('RGBA', (S, S))
-    d = ImageDraw.Draw(img)
     # vertical gradient tile
     grad = Image.new('RGBA', (1, S))
     for y in range(S):
@@ -19,13 +18,17 @@ def draw():
     mask = Image.new('L', (S, S))
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, S - 1, S - 1), radius=S // 5, fill=255)
     img.paste(grad.resize((S, S)), (0, 0), mask)
-    # note: two heads joined by a beam
+    # note: two heads joined by a beam, drawn on its own layer and then centred on the tile
+    note = Image.new('RGBA', (S, S))
+    d = ImageDraw.Draw(note)
     w = (255, 255, 255, 255)
     for cx in (175, 345):
         d.ellipse((cx - 62, 330, cx + 52, 420), fill=w)
     d.rectangle((215, 120, 247, 380), fill=w)
     d.rectangle((385, 90, 417, 350), fill=w)
     d.polygon([(215, 120), (417, 90), (417, 160), (215, 190)], fill=w)
+    note = note.crop(note.getbbox())
+    img.alpha_composite(note, ((S - note.width) // 2, (S - note.height) // 2))
     return img
 
 
