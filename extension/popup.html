@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<style>
+  body { margin: 0; width: 300px; font: 13px/1.4 system-ui, sans-serif; background: #17171c; color: #eee; }
+  header { display: flex; align-items: center; gap: 8px; padding: 12px 14px; font-weight: 600; }
+  header img { width: 20px; height: 20px; }
+  .card { display: flex; gap: 10px; margin: 0 14px; padding: 10px; border-radius: 10px; background: #24242b; }
+  .card img { width: 52px; height: 52px; border-radius: 6px; object-fit: cover; background: #33333c; flex: none; }
+  .card .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card .a, .card .s { color: #aaa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card > div { min-width: 0; align-self: center; }
+  .empty { color: #999; }
+  #status { margin: 10px 14px 0; color: #aaa; }
+  #status.bad { color: #ff8c7a; }
+  label { display: flex; align-items: center; justify-content: space-between; margin: 12px 14px 14px; cursor: pointer; }
+  input { accent-color: #ff7a33; width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+<header><img src="icons/icon32.png" alt="">Music Presence</header>
+<div class="card" id="card"></div>
+<div id="status"></div>
+<label>Показывать в Discord <input type="checkbox" id="enabled"></label>
+<script src="popup.js"></script>
+</body>
+</html>

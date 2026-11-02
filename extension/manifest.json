@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Music Presence",
+  "version": "0.1.0",
+  "description": "Показывает в Discord, что ты слушаешь в браузере.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsxZh76itGyxIozAAOL5gmRfmduYpQ9KK5SxlvWg7tdgw7HC8MEUQ0FXKC0cFxz5R7s+FIj0r5j2CSsklAlihwoQj+B/5BOx99eB2/tLuQnDwiuckkwVFyRGfNqyytJzsFHaOUy26IYoF+pWbJhOfRYFYWv2W03+y3BGLQ9TK4nz7suVY4FLPul39w/VsVoCp/g6Z0V+2esOFgHPxP81/FsWuYPSJB4Klz71Kj7d5HE02l/waJwEECVXmL6+SgfU15DuLeqecW/ogFaeLGecIroExzYRiV8u7Gbx8+cwJ51ccfpcBQAhHhgTZyaKHOVMEzpb7j1wWn0L7hq1WGb+4rwIDAQAB",
+  "minimum_chrome_version": "111",
+  "permissions": ["nativeMessaging", "storage"],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png" }
+  },
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://soundcloud.com/*", "https://www.youtube.com/*", "https://music.youtube.com/*",
+        "https://music.yandex.ru/*", "https://open.spotify.com/*", "https://vk.com/*", "https://vk.ru/*",
+        "https://zvuk.com/*", "https://*.bandcamp.com/*", "https://www.deezer.com/*",
+        "https://music.apple.com/*", "https://listen.tidal.com/*"
+      ],
+      "js": ["page.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://soundcloud.com/*", "https://www.youtube.com/*", "https://music.youtube.com/*",
+        "https://music.yandex.ru/*", "https://open.spotify.com/*", "https://vk.com/*", "https://vk.ru/*",
+        "https://zvuk.com/*", "https://*.bandcamp.com/*", "https://www.deezer.com/*",
+        "https://music.apple.com/*", "https://listen.tidal.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

@@ -1,3 +1,8 @@
 node_modules/
 dist/
+build/
+app/
+__pycache__/
 *.log
+*.log.old
+*.pem
