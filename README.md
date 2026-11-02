@@ -22,13 +22,14 @@ YouTube Music, Яндекс Музыка, Spotify, VK Музыка, Звук, Ba
 
 Нужен Python 3.11+.
 
-1. Создай приложение в Discord: https://discord.com/developers/applications → **New Application**.
-   Его название Discord покажет в профиле («Слушает …»). Скопируй **Application ID** и вставь его в
-   `CLIENT_ID` в `extension/background.js`.
-2. Зарегистрируй помощника: `python src\host.py --install`.
-3. Открой `chrome://extensions`, включи **Режим разработчика** → **Загрузить распакованное** → папка `extension`.
-4. В Discord: Настройки → Конфиденциальность активности → включи «Показывать текущую активность».
-5. Включи музыку в браузере.
+1. Зарегистрируй помощника: `python src\host.py --install`.
+2. Открой `chrome://extensions`, включи **Режим разработчика** → **Загрузить распакованное** → папка `extension`.
+3. В Discord: Настройки → Конфиденциальность активности → включи «Показывать текущую активность».
+4. Включи музыку в браузере.
+
+Своё приложение в Discord создавать не нужно: оно уже есть, его номер записан в `CLIENT_ID`
+в `extension/background.js`. Хочешь другую подпись вместо «Слушает музыку» — создай своё на
+https://discord.com/developers/applications и поставь его Application ID туда же.
 
 Отключить: `python src\host.py --uninstall` и удалить расширение.
 
